@@ -17,20 +17,25 @@ function App() {
   let departureTime = []
   let trainNumber = []
   let arrivalTime = []
+  let stationNameUpper=''
+  let stationOfArrivalUpper=''
 
   const getTrains = async () => {
     try {
       const response = await axios.get(STATION_URL)
       const dataStations = await response.data
+      /*Muuttaa aseman nimen ensimmäisen kirjaimen isoksi, jos se on kirjoitettu pienellä */
+      stationNameUpper=stationName.charAt(0).toUpperCase()+ stationName.slice(1)
       /*Haetaan lähtöaseman asemakoodi. Tämä ei ole vielä huomioinut niitä kaupunkeja, joilla on monta lähtöasemaa(esim Oulu)*/
       dataStations.forEach(element => {
-        if (element.stationName === stationName) {
+        if (element.stationName === stationNameUpper) {
           departureStationShortCode = element.stationShortCode
         }
       });
       /*Haetaan saapumisaseman asemakoodi */
+      stationOfArrivalUpper=stationOfArrival.charAt(0).toUpperCase()+ stationOfArrival.slice(1)
       dataStations.forEach(element => {
-        if (element.stationName === stationOfArrival) {
+        if (element.stationName === stationOfArrivalUpper) {
           arrivalStationShortCode = element.stationShortCode
         }
       });
@@ -59,7 +64,7 @@ function App() {
         /*console.log(departureTime)*/
       });
     } catch (err) {
-      alert(err);
+      alert("Asemien välillä ei ole suoria junayhteyksiä");
     }
   }
 
@@ -67,7 +72,10 @@ function App() {
     <div className='container'>
       <div>
         <h1>Juna</h1>
-        <p>Kirjoita lähtöasema ja määränpää, niin saat junat, jotka menevät 24 tunnin sisällä asemien välillä</p>
+        <p>Kirjoita lähtöasema ja määränpää, niin saat junat, jotka menevät 24 tunnin sisällä asemien välillä.</p>
+        <p>Tämä ohjelma näyttää vain suorat yhteydet.</p>   
+        <p>Huomaa, että suurissa kaupungeissa on monta asemaa, joten laita suuren kaupungin nimen perään asema. 
+          Esimerkiksi jos haluat hakea Oulusta lähteviä junia, niin kirjoita hakukenttään "Oulu asema".</p>   
       </div>
       <div>
         <div>
